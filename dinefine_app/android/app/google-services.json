@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "248183360700",
+    "firebase_url": "https://dinefine-fdadb.firebaseio.com",
+    "project_id": "dinefine-fdadb",
+    "storage_bucket": "dinefine-fdadb.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:248183360700:android:d1f60c10f08916d44bd4b9",
+        "android_client_info": {
+          "package_name": "com.example.dinefine"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "248183360700-6siaupqafncur9qpibrmirjojvbmke76.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyA8NkE8-acWxu47DdpVSu5jg2x9sVIuI2A"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "248183360700-6siaupqafncur9qpibrmirjojvbmke76.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

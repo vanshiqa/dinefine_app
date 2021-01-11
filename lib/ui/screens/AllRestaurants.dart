@@ -7,6 +7,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 
 import '../../constants.dart';
+import '../../constants.dart';
+import 'RestaurantScreen.dart';
 
 class AllRestaurants extends StatefulWidget {
   final User user;
@@ -59,7 +61,15 @@ class _AllRestaurantsState extends State<AllRestaurants> {
 
   @override
   void initState() {
-    // TODO: implement initState
+    restArr.clear();
+    for (String el in restIds) {
+      getRestaurant(el).then((value) {
+        setState(() {
+          restArr.add(value);
+        });
+      });
+    }
+    print(restArr);
     super.initState();
   }
 
@@ -71,20 +81,9 @@ class _AllRestaurantsState extends State<AllRestaurants> {
         padding: const EdgeInsets.all(30.0),
         child: Column(
           children: <Widget>[
-            //explain what this does
-            RaisedButton(
-              child: Text('get restaurant'),
-              onPressed: () {
-                restArr.clear();
-                for (String el in restIds) {
-                  getRestaurant(el).then((value) {
-                    setState(() {
-                      restArr.add(value);
-                    });
-                  });
-                }
-                print(restArr);
-              },
+            Text(
+              "All Restaurants:",
+              style: Constants.HEADING,
             ),
             Container(
               height: 600,
@@ -98,10 +97,7 @@ class _AllRestaurantsState extends State<AllRestaurants> {
                       Navigator.push(
                           context,
                           MaterialPageRoute(
-                              builder: (context) => Seatbooking(
-                                    user: widget.user,
-                                    res: res,
-                                  )));
+                              builder: (context) => RestaurantScreen()));
                     },
                     child: ListTile(
                       title: Text(res.name),

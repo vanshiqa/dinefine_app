@@ -12,5 +12,7 @@ class Constants {
   static const mainYellow = Color(0xffEBCa62);
   static const RESTAURANTS = 'restaurants';
   static const RESIDS = ['DowijYsMAGyhOgYxTrT0'];
+  static TextStyle HEADING =
+      TextStyle(fontWeight: FontWeight.bold, fontSize: 30);
   //TODO: put image on this page --> google it
 }

@@ -2,6 +2,7 @@ import 'dart:math';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:dinefine_app/ui/screens/AllRestaurants.dart';
+import 'package:dinefine_app/ui/screens/ProfileScreen.dart';
 import 'package:dinefine_app/ui/screens/categorypage.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
@@ -13,6 +14,9 @@ import 'package:dinefine_app/ui/services/Authenticate.dart';
 import 'package:dinefine_app/ui/utils/helper.dart';
 
 import '../../main.dart';
+import '../../main.dart';
+import '../../main.dart';
+import 'AllRestaurants.dart';
 
 FireStoreUtils _fireStoreUtils = FireStoreUtils();
 
@@ -29,8 +33,14 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeState extends State<HomeScreen> {
   final User user;
+  int _currentIndex = 0;
 
   _HomeState(this.user);
+
+  List ScreenList = [
+    AllRestaurants(user: MyAppState.currentUser),
+    ProfileScreen()
+  ];
 
   @override
   Widget build(BuildContext context) {
@@ -77,57 +87,31 @@ class _HomeState extends State<HomeScreen> {
         backgroundColor: Colors.white,
         centerTitle: true,
       ),
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          mainAxisSize: MainAxisSize.max,
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: <Widget>[
-            displayCircleImage(user.profilePictureURL, 125, false),
-            Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: Text(user.firstName),
+      body: ScreenList[_currentIndex],
+      bottomNavigationBar: BottomNavigationBar(
+        selectedItemColor: Constants.mainYellow,
+        onTap: onTabTapped, // new
+        currentIndex: _currentIndex, // new
+        items: [
+          new BottomNavigationBarItem(
+            icon: Icon(Icons.explore, size: 40),
+            title: Text(''),
+          ),
+          new BottomNavigationBarItem(
+            icon: Icon(
+              Icons.person,
+              size: 40,
             ),
-            Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: Text(user.email),
-            ),
-            Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: Text(user.phoneNumber),
-            ),
-            Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: Text(user.userID),
-            ),
-            Padding(
-              padding: const EdgeInsets.all(8),
-              child: RaisedButton(
-                child: Text('View Restaurants'),
-                onPressed: () {
-                  Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: (context) => AllRestaurants(user: user)));
-                },
-              ),
-            ),
-            Padding(
-              padding: const EdgeInsets.fromLTRB(20, 23, 305, 12),
-              child: Text('Seat number'),
-            ),
-            Padding(
-              padding: const EdgeInsets.all(8),
-              child: Text(
-                user.booked.toString() == '[]'
-                    ? 'No bookings yet!'
-                    : user.booked.toString(),
-                style: TextStyle(fontSize: 30, fontWeight: FontWeight.bold),
-              ),
-            ),
-          ],
-        ),
+            title: Text(''),
+          ),
+        ],
       ),
     );
+  }
+
+  void onTabTapped(int index) {
+    setState(() {
+      _currentIndex = index;
+    });
   }
 }

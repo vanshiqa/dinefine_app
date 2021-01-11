@@ -43,15 +43,15 @@ class _SeatbookingState extends State<Seatbooking> {
           actions: <Widget>[
             FlatButton(
               child: Text('Approve'),
-              onPressed: () {
-                Navigator.pushAndRemoveUntil(
-                    context,
-                    MaterialPageRoute(
-                        builder: (context) => HomeScreen(
-                              user: widget.user,
-                            )),
-                    (Route<dynamic> route) => false);
-              },
+              // onPressed: () {
+              //   Navigator.pushAndRemoveUntil(
+              //       context,
+              //       MaterialPageRoute(
+              //           builder: (context) => HomeScreen(
+              //                 user: widget.user,
+              //               )),
+              //       (Route<dynamic> route) => false);
+              // },
             ),
           ],
         );

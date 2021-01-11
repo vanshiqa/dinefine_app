@@ -31,6 +31,19 @@ class User {
       this.userID,
       this.profilePictureURL});
 
+  User user() {
+    User(
+        email: this.email,
+        firstName: this.firstName,
+        phoneNumber: this.phoneNumber,
+        lastName: this.lastName,
+        active: this.active,
+        lastOnlineTimestamp: this.lastOnlineTimestamp,
+        settings: this.settings,
+        userID: this.userID,
+        profilePictureURL: this.profilePictureURL);
+  }
+
   String fullName() {
     return '$firstName $lastName';
   }

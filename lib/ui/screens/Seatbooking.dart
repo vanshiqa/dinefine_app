@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:dinefine_app/main.dart';
 import 'package:dinefine_app/model/User.dart';
 import 'package:dinefine_app/model/restaurant.dart';
 import 'package:dinefine_app/ui/Widgets/LabeledCheckBox.dart';
@@ -6,14 +7,12 @@ import 'package:dinefine_app/ui/screens/HomeScreen.dart';
 import 'package:dinefine_app/ui/utils/FirebaseFunctions.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 import '../../constants.dart';
 
 class Seatbooking extends StatefulWidget {
-  final User user;
-  final Restaurant res;
-  Seatbooking({Key key, @required this.user, @required this.res})
-      : super(key: key);
+  Seatbooking({Key key}) : super(key: key);
 
   @override
   _SeatbookingState createState() => _SeatbookingState();
@@ -24,6 +23,10 @@ class _SeatbookingState extends State<Seatbooking> {
   List seatList = List();
   var arr = ['1', '2', '3'];
   bool isSelected = true;
+  User user = MyAppState.currentUser;
+  Restaurant res = MyAppState.currentRes;
+  TimeOfDay selectedTime;
+  Map<String, dynamic> selectedSeatMap;
 
   Future<void> _showMyDialog() async {
     return showDialog<void>(
@@ -43,15 +46,15 @@ class _SeatbookingState extends State<Seatbooking> {
           actions: <Widget>[
             FlatButton(
               child: Text('Approve'),
-              // onPressed: () {
-              //   Navigator.pushAndRemoveUntil(
-              //       context,
-              //       MaterialPageRoute(
-              //           builder: (context) => HomeScreen(
-              //                 user: widget.user,
-              //               )),
-              //       (Route<dynamic> route) => false);
-              // },
+              onPressed: () {
+                Navigator.pushAndRemoveUntil(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => HomeScreen(
+                              user: user,
+                            )),
+                    (Route<dynamic> route) => false);
+              },
             ),
           ],
         );
@@ -61,11 +64,19 @@ class _SeatbookingState extends State<Seatbooking> {
 
   @override
   void initState() {
-    for (String el in widget.res.seatMap.keys) {
-      if (widget.res.seatMap[el] == 'false') {
+    setState(() {
+      selectedTime = TimeOfDay.fromDateTime(DateTime(1, 2, 3, 1, 0));
+      selectedSeatMap = res.seatMap[selectedTime
+          .toString()
+          .replaceAll("TimeOfDay(", "")
+          .replaceAll(")", "")];
+    });
+    for (String el in selectedSeatMap.keys) {
+      if (selectedSeatMap[el] == 'false') {
         seatList.add(el);
       }
     }
+
     super.initState();
   }
 
@@ -75,6 +86,16 @@ class _SeatbookingState extends State<Seatbooking> {
         body: Column(
       children: <Widget>[
         Container(
+          height: 30,
+        ),
+        RaisedButton(
+          child: Text('Select a Time'),
+          onPressed: () {
+            timingPopUp();
+            print(selectedTime);
+          },
+        ),
+        Container(
           height: 600,
           child: ListView.builder(
             itemCount: seatList.length,
@@ -82,15 +103,13 @@ class _SeatbookingState extends State<Seatbooking> {
               var el = seatList[index];
               return LabeledCheckbox(
                 label: el,
-                value: widget.res.seatMap[el] == 'false' ? false : true,
+                value: selectedSeatMap[el] == 'false' ? false : true,
                 padding: EdgeInsets.all(8),
                 onChanged: (bool newValue) {
-                  print(widget.res.seatMap);
+                  print(selectedSeatMap);
                   setState(() {
-                    widget.res.seatMap.update(
-                        el,
-                        (value) =>
-                            value == 'false' ? widget.user.userID : 'false');
+                    selectedSeatMap.update(el,
+                        (value) => value == 'false' ? user.userID : 'false');
                   });
                 },
               );
@@ -100,17 +119,53 @@ class _SeatbookingState extends State<Seatbooking> {
         RaisedButton(
           onPressed: () {
             FirebaseFunctions()
-                .updateSeats(widget.res, widget.res.seatMap, widget.user)
+                .updateSeats(
+                    res,
+                    selectedSeatMap,
+                    user,
+                    selectedTime
+                        .toString()
+                        .replaceAll("TimeOfDay(", "")
+                        .replaceAll(")", ""))
                 .then((value) {
-              setState(() {
-                widget.user.booked = value;
-              });
+              // setState(() {
+              //   user.booked = value;
+              // });
             }).whenComplete(() => _showMyDialog());
           },
           child: Text('Finish Payment'),
         ),
-        Image.asset('assets/images/facebook_logo.png')
       ],
     ));
+  }
+
+  Future<void> timingPopUp() async {
+    TimeOfDay picked =
+        await showTimePicker(context: this.context, initialTime: selectedTime);
+    if (picked != null) {
+      setState(() {
+        selectedTime = picked;
+        selectedTime.replacing(minute: 00);
+        selectedSeatMap = res.seatMap[selectedTime
+            .toString()
+            .replaceAll("TimeOfDay(", "")
+            .replaceAll(")", "")];
+      });
+      seatList.clear();
+      print(selectedSeatMap.keys);
+      for (String el in selectedSeatMap.keys) {
+        if (selectedSeatMap[el] == 'false') {
+          seatList.add(el);
+        }
+      }
+      print(seatList);
+      print('Selected time is: ' +
+          selectedTime
+              .toString()
+              .replaceRange(0, 10, '')
+              .replaceFirst(")", ""));
+      //TODO: show seat timings according to this time.
+
+    }
   }
 }

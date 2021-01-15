@@ -14,5 +14,7 @@ class Constants {
   static const RESIDS = ['DowijYsMAGyhOgYxTrT0'];
   static TextStyle HEADING =
       TextStyle(fontWeight: FontWeight.bold, fontSize: 30);
+  static TextStyle SUBHEADING =
+      TextStyle(fontWeight: FontWeight.bold, fontSize: 20);
   //TODO: put image on this page --> google it
 }

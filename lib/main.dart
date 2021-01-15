@@ -1,3 +1,4 @@
+import 'package:dinefine_app/model/restaurant.dart';
 import 'package:flutter/material.dart';
 import 'dart:async';
 
@@ -7,7 +8,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:dinefine_app/model/User.dart';
 import 'package:dinefine_app/ui/screens/HomeScreen.dart';
-import 'package:dinefine_app/ui/services/Authenticate.dart';
+import 'package:dinefine_app/ui/utils/Authenticate.dart';
 import 'package:dinefine_app/ui/utils/helper.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -17,8 +18,8 @@ import 'ui/screens/AuthScreen.dart';
 import 'ui/screens/HomeScreen.dart';
 import 'ui/screens/HomeScreen.dart';
 import 'ui/screens/OnBoardingScreen.dart';
-import 'ui/services/Authenticate.dart';
-import 'ui/services/Authenticate.dart';
+import 'ui/utils/Authenticate.dart';
+import 'ui/utils/Authenticate.dart';
 
 void main() {
   SharedPreferences.setMockInitialValues({});
@@ -33,6 +34,7 @@ class MyApp extends StatefulWidget {
 
 class MyAppState extends State<MyApp> with WidgetsBindingObserver {
   static User currentUser;
+  static Restaurant currentRes;
 
   FirebaseAuth _auth = FirebaseAuth.instance;
   FireStoreUtils _fireStoreUtils = FireStoreUtils();

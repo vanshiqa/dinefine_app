@@ -10,7 +10,7 @@ import 'package:flutter/material.dart';
 import 'package:dinefine_app/constants.dart';
 import 'package:dinefine_app/model/User.dart';
 import 'package:dinefine_app/ui/screens/AuthScreen.dart';
-import 'package:dinefine_app/ui/services/Authenticate.dart';
+import 'package:dinefine_app/ui/utils/Authenticate.dart';
 import 'package:dinefine_app/ui/utils/helper.dart';
 
 import '../../main.dart';

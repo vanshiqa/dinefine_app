@@ -6,5 +6,6 @@ class Restaurant {
   int numOrders;
   String description;
   String location;
-  Map<String, dynamic> seatMap;
+  Map<String, Map<String, dynamic>> seatMap;
+  String imgUrl;
 }

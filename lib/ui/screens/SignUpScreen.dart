@@ -6,7 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:dinefine_app/model/User.dart';
 import 'package:dinefine_app/ui/screens/HomeScreen.dart';
-import 'package:dinefine_app/ui/services/Authenticate.dart';
+import 'package:dinefine_app/ui/utils/Authenticate.dart';
 import 'package:dinefine_app/ui/utils/helper.dart';
 //import 'package:image_picker/image_picker.dart';
 

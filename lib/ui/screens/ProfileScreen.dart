@@ -60,7 +60,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
               child: Text(
                 user.booked.toString() == '[]'
                     ? 'No bookings yet!'
-                    : user.booked.toString(),
+                    : MyAppState.currentUser.booked.toString(),
                 style: TextStyle(fontSize: 30, fontWeight: FontWeight.bold),
               ),
             ),
@@ -68,5 +68,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
         ),
       ),
     );
+  }
+
+  String bookedToString(List booked) {
+    return booked[0];
   }
 }

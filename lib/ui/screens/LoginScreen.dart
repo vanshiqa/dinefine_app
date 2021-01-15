@@ -9,7 +9,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_facebook_login/flutter_facebook_login.dart';
 import 'package:dinefine_app/model/User.dart';
 import 'HomeScreen.dart';
-import 'package:dinefine_app/ui/services/Authenticate.dart';
+import 'package:dinefine_app/ui/utils/Authenticate.dart';
 import 'package:dinefine_app/ui/utils/helper.dart';
 import 'package:http/http.dart' as http;
 

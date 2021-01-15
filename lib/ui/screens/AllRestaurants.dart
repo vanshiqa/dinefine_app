@@ -8,6 +8,7 @@ import 'package:flutter/rendering.dart';
 
 import '../../constants.dart';
 import '../../constants.dart';
+import '../../main.dart';
 import 'RestaurantScreen.dart';
 
 class AllRestaurants extends StatefulWidget {
@@ -31,10 +32,12 @@ class _AllRestaurantsState extends State<AllRestaurants> {
     String name = '';
     Restaurant res =
         new Restaurant(); //constructor function --> creates new object
+    res.seatMap = Map<String, Map<String, dynamic>>();
     await collectionRef.document(id).get().then((DocumentSnapshot document) {
       res.name = document.data['name'];
       res.numOrders = document.data['numOrders'];
       res.id = id;
+      res.imgUrl = document.data['imgUrl'];
       //print(res.numOrders);
     });
     await collectionRef
@@ -43,9 +46,13 @@ class _AllRestaurantsState extends State<AllRestaurants> {
         .getDocuments()
         .then((QuerySnapshot snapshot) {
       snapshot.documents.forEach((element) {
-        print("seats are " + element.data.toString());
-        res.seatMap = element.data;
+        print("seats are " +
+            element.documentID.toString() +
+            " : " +
+            element.data.toString());
+        res.seatMap.putIfAbsent(element.documentID, () => element.data);
       });
+      print("final seat map: " + res.seatMap.toString());
     });
     return res; //final return value of function
   }
@@ -86,14 +93,15 @@ class _AllRestaurantsState extends State<AllRestaurants> {
               style: Constants.HEADING,
             ),
             Container(
-              height: 600,
+              height: 400,
               child: ListView.builder(
                 itemCount: restArr.length,
                 itemBuilder: (context, index) {
                   Restaurant res = restArr[index];
                   return FlatButton(
                     onPressed: () {
-                      print('button pressed');
+                      print('selected restaurant button pressed');
+                      MyAppState.currentRes = res;
                       Navigator.push(
                           context,
                           MaterialPageRoute(

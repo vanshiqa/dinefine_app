@@ -14,11 +14,9 @@ class User {
   String profilePictureURL = '';
   bool selected = false;
   String appIdentifier = 'Flutter ${Platform.operatingSystem}';
-  //TODO: when finish payment -- update seatMap on firebase
-  //TODO: get booked from firebase
 
+// Booked seats - first element is the time
   var booked = [];
-  //TODO: add timing option
 
   User(
       {this.email,

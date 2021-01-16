@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:dinefine_app/model/User.dart';
 import 'package:dinefine_app/model/restaurant.dart';
 import 'package:dinefine_app/ui/screens/Seatbooking.dart';
+import 'package:dinefine_app/ui/utils/FirebaseFunctions.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
@@ -30,9 +31,13 @@ class _AllRestaurantsState extends State<AllRestaurants> {
 
   Future<Restaurant> getRestaurant(String id) async {
     String name = '';
+    double satVal = 0;
     Restaurant res =
         new Restaurant(); //constructor function --> creates new object
     res.seatMap = Map<String, Map<String, dynamic>>();
+    FirebaseFunctions().getSatisfactionValue(id).then((value) {
+      res.satVal = value;
+    });
     await collectionRef.document(id).get().then((DocumentSnapshot document) {
       res.name = document.data['name'];
       res.numOrders = document.data['numOrders'];
@@ -40,6 +45,7 @@ class _AllRestaurantsState extends State<AllRestaurants> {
       res.imgUrl = document.data['imgUrl'];
       //print(res.numOrders);
     });
+
     await collectionRef
         .document(id)
         .collection('Seats')
@@ -54,6 +60,7 @@ class _AllRestaurantsState extends State<AllRestaurants> {
       });
       print("final seat map: " + res.seatMap.toString());
     });
+
     return res; //final return value of function
   }
 

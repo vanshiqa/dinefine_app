@@ -19,6 +19,7 @@ class _RestaurantScreenState extends State<RestaurantScreen> {
   User user = MyAppState.currentUser;
   List<MenuItem> menu = [];
   List<MenuItem> topThree = [];
+  List<MenuItem> topPrice = [];
   bool showAnalysis = false;
 
   @override
@@ -82,17 +83,23 @@ class _RestaurantScreenState extends State<RestaurantScreen> {
                             setState(() {
                               showAnalysis = true;
                               setTopThree(menu);
+                              setTopPriced(menu);
                             });
                           },
                         )
                       ],
                     ),
                     showAnalysis
-                        ? AnalysisDisplay(topThree: topThree)
+                        ? AnalysisDisplay(
+                            topThree: topThree,
+                            topPrice: topPrice,
+                          )
                         : MenuDisplay(menu: menu),
                     RaisedButton(
                       child: Text('Book Seats'),
                       onPressed: () {
+                        FirebaseFunctions()
+                            .updateCustomers(MyAppState.currentRes);
                         Navigator.push(
                             context,
                             MaterialPageRoute(
@@ -121,6 +128,17 @@ class _RestaurantScreenState extends State<RestaurantScreen> {
     print(temp[0].popularity);
     setState(() {
       topThree = temp.sublist(0, 3);
+    });
+  }
+
+  void setTopPriced(List<MenuItem> menu) {
+    List<MenuItem> temp = [];
+    menu.forEach((el) {
+      temp.add(el);
+    });
+    temp.sort((a, b) => b.price.compareTo(a.price));
+    setState(() {
+      topPrice = temp.sublist(0, 3);
     });
   }
 }
@@ -153,32 +171,73 @@ class AnalysisDisplay extends StatelessWidget {
   const AnalysisDisplay({
     Key key,
     @required this.topThree,
+    @required this.topPrice,
   }) : super(key: key);
 
   final List<MenuItem> topThree;
+  final List<MenuItem> topPrice;
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      height: 100,
-      child: ListView.builder(
-        physics: NeverScrollableScrollPhysics(),
-        itemCount: 3,
-        itemBuilder: (context, index) {
-          MenuItem el = topThree[index];
-          return Container(
-            child: Row(
-              children: [
-                Text(
-                  index.toString() + '. ',
-                  style: TextStyle(fontWeight: FontWeight.bold, fontSize: 14),
+    return Column(
+      children: [
+        Container(
+          height: 200,
+          child: Row(
+            children: [
+              Container(
+                height: 100,
+                width: 150,
+                child: ListView.builder(
+                  physics: NeverScrollableScrollPhysics(),
+                  itemCount: 3,
+                  itemBuilder: (context, index) {
+                    MenuItem el = topThree[index];
+                    return Container(
+                      child: Row(
+                        children: [
+                          Text(
+                            index.toString() + '. ',
+                            style: TextStyle(
+                                fontWeight: FontWeight.bold, fontSize: 14),
+                          ),
+                          Text(el.name),
+                        ],
+                      ),
+                    );
+                  },
                 ),
-                Text(el.name),
-              ],
-            ),
-          );
-        },
-      ),
+              ),
+              Container(
+                height: 100,
+                width: 150,
+                child: ListView.builder(
+                  physics: NeverScrollableScrollPhysics(),
+                  itemCount: 3,
+                  itemBuilder: (context, index) {
+                    MenuItem el = topPrice[index];
+                    return Container(
+                      child: Row(
+                        children: [
+                          Text(el.name + " - \$"),
+                          Text(
+                            el.price.toString(),
+                            style: TextStyle(
+                                fontWeight: FontWeight.bold, fontSize: 14),
+                          ),
+                        ],
+                      ),
+                    );
+                  },
+                ),
+              ),
+            ],
+          ),
+        ),
+        Text("Number of customers: " +
+            MyAppState.currentRes.numOrders.toString()),
+        Text("Satisfaction Level: " + MyAppState.currentRes.satVal.toString()),
+      ],
     );
   }
 }

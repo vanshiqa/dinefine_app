@@ -11,6 +11,7 @@ class Constants {
   static const USERS = 'users';
   static const mainYellow = Color(0xffEBCa62);
   static const RESTAURANTS = 'restaurants';
+  static const BOOKEDSEATS = 'bookedSeats';
   static const RESIDS = ['DowijYsMAGyhOgYxTrT0'];
   static TextStyle HEADING =
       TextStyle(fontWeight: FontWeight.bold, fontSize: 30);

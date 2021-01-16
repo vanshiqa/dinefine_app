@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:date_format/date_format.dart';
 import 'package:dinefine_app/main.dart';
 import 'package:dinefine_app/model/MenuItem.dart';
 import 'package:dinefine_app/model/User.dart';
@@ -11,6 +12,7 @@ import '../../constants.dart';
 class FirebaseFunctions {
   final db = Firestore.instance;
   final collectionRef = Firestore.instance.collection(Constants.RESTAURANTS);
+  final userCollectionRef = Firestore.instance.collection(Constants.USERS);
 
   Future<List<dynamic>> updateSeats(Restaurant res,
       Map<String, dynamic> selectedSeats, User user, String time) async {
@@ -33,10 +35,14 @@ class FirebaseFunctions {
 
     //update user's booked variable
     List booked = new List();
+    booked.add(MyAppState.currentRes.name);
     booked.add(time);
     booked.add(selectedSeats);
-    MyAppState.currentUser.booked = booked;
     print("booked is: " + MyAppState.currentUser.booked.toString());
+    userCollectionRef
+        .document(MyAppState.currentUser.userID)
+        .updateData({Constants.BOOKEDSEATS: booked.toString()});
+    MyAppState.currentUser.booked = booked;
     return retArr;
   }
 
@@ -49,7 +55,8 @@ class FirebaseFunctions {
         .then((QuerySnapshot snapshot) {
       // print(snapshot.toString());
       snapshot.documents.forEach((el) {
-        print('in getMenu(), each snapshot doc is: ' + el.toString());
+        print('in getMenu(), each snapshot doc is: ' + el.metadata.toString());
+
         MenuItem item = new MenuItem();
         item.id = el.documentID;
         item.name = el.data['name'];
@@ -62,5 +69,75 @@ class FirebaseFunctions {
       });
     });
     return menu;
+  }
+
+  Future<void> updateCustomers(Restaurant res) async {
+    bool orderedBefore = false;
+    final customer = collectionRef
+        .document(res.id)
+        .collection('Customers')
+        .document(MyAppState.currentUser.userID);
+    final snapshot = await customer.get();
+    if (snapshot != null) {
+      orderedBefore = true; //increment number of orders
+      customer.updateData({
+        "numTimesVisited": FieldValue.increment(1),
+        "seats": "[]",
+        "itemsOrdered": "[]",
+      });
+    } else {
+      customer.setData({
+        "seats": "[]",
+        "itemsOrdered": "[]",
+        "numTimesVisited": 1,
+      });
+    }
+    collectionRef
+        .document(res.id)
+        .updateData({"numOrders": FieldValue.increment(1)});
+  }
+
+  Future<double> getSatisfactionValue(String id) async {
+    //get total customers = totalCust
+    // numRevisited
+    //extraVisits
+    //satVal
+    //for each customer, check how many times they have revisited.
+    //If each numVisits = 1 --> nothing
+    //If each numVisits 2 or 3  --> add 1 to extraVisits
+    //satVal  = numVisited/totalCust * 100
+    //satVal * 1.03 * extraVisits
+    int totalCust = 0;
+    int numRevisited = 0;
+    int extraVisits = 0;
+    double satVal;
+    await collectionRef
+        .document(id)
+        .collection('Customers')
+        .getDocuments()
+        .then((QuerySnapshot snapshot) {
+      snapshot.documents.forEach((el) {
+        print("Customer data in getSatVal: " + el.data.toString());
+        int visits = el.data["numTimesVisited"];
+        totalCust++;
+
+        if (visits == 2 || visits == 3) {
+          numRevisited++;
+        } else if (visits > 3) {
+          numRevisited++;
+          extraVisits++;
+        }
+      });
+    });
+    print(totalCust);
+    print(numRevisited);
+    satVal = (numRevisited / totalCust) * 100;
+    print("satVal before extra: " + satVal.toString());
+    satVal += extraVisits * 1.03;
+    if (satVal > 100) {
+      satVal = 100;
+    }
+    print("satVal: " + satVal.toString());
+    return satVal;
   }
 }

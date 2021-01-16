@@ -8,4 +8,5 @@ class Restaurant {
   String location;
   Map<String, Map<String, dynamic>> seatMap;
   String imgUrl;
+  double satVal;
 }

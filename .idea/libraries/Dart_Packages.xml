@@ -520,6 +520,13 @@
             </list>
           </value>
         </entry>
+        <entry key="percent_indicator">
+          <value>
+            <list>
+              <option value="$USER_HOME$/Programming/flutter/.pub-cache/hosted/pub.dartlang.org/percent_indicator-2.1.9/lib" />
+            </list>
+          </value>
+        </entry>
         <entry key="petitparser">
           <value>
             <list>
@@ -867,6 +874,7 @@
       <root url="file://$USER_HOME$/Programming/flutter/.pub-cache/hosted/pub.dartlang.org/path_provider_platform_interface-1.0.4/lib" />
       <root url="file://$USER_HOME$/Programming/flutter/.pub-cache/hosted/pub.dartlang.org/path_provider_windows-0.0.4+3/lib" />
       <root url="file://$USER_HOME$/Programming/flutter/.pub-cache/hosted/pub.dartlang.org/pedantic-1.9.0/lib" />
+      <root url="file://$USER_HOME$/Programming/flutter/.pub-cache/hosted/pub.dartlang.org/percent_indicator-2.1.9/lib" />
       <root url="file://$USER_HOME$/Programming/flutter/.pub-cache/hosted/pub.dartlang.org/petitparser-3.1.0/lib" />
       <root url="file://$USER_HOME$/Programming/flutter/.pub-cache/hosted/pub.dartlang.org/platform-2.2.1/lib" />
       <root url="file://$USER_HOME$/Programming/flutter/.pub-cache/hosted/pub.dartlang.org/plugin_platform_interface-1.0.2/lib" />

@@ -3,6 +3,7 @@ import 'package:dinefine_app/model/User.dart';
 import 'package:dinefine_app/model/restaurant.dart';
 import 'package:dinefine_app/ui/screens/Seatbooking.dart';
 import 'package:dinefine_app/ui/utils/FirebaseFunctions.dart';
+import 'package:dinefine_app/ui/utils/RestaurantInfo.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
@@ -24,7 +25,7 @@ class _AllRestaurantsState extends State<AllRestaurants> {
   final db = Firestore.instance;
   final collectionRef = Firestore.instance.collection(Constants.RESTAURANTS);
   String name1 = '';
-  var restIds = Constants.RESIDS;
+  var restIds = RestaurantInfo.RESIDS;
   var restArr = [];
 
   int numOrders1;
@@ -43,6 +44,8 @@ class _AllRestaurantsState extends State<AllRestaurants> {
       res.numOrders = document.data['numOrders'];
       res.id = id;
       res.imgUrl = document.data['imgUrl'];
+      res.qTime = document.data['qTime'];
+      res.description = document.data['description'];
       //print(res.numOrders);
     });
 
@@ -117,22 +120,15 @@ class _AllRestaurantsState extends State<AllRestaurants> {
                     child: ListTile(
                       title: Text(res.name),
                       trailing: Text(res.numOrders.toString()),
-                      subtitle: Text("Great restuarant!"),
+                      subtitle: Text(res.description),
                     ),
                   );
                 },
               ),
             ),
-            RaisedButton(
-              onPressed: () => updateSeats(restArr[1]),
-              child: Text('Hi there, howdy'),
-            )
           ],
         ),
       ),
     );
   }
 }
-
-//TODO: Create a new page
-//TODO: From figma - create Margherita's page layout

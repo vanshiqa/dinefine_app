@@ -8,6 +8,7 @@ import 'package:dinefine_app/ui/utils/Authenticate.dart';
 import 'package:flutter/cupertino.dart';
 
 import '../../constants.dart';
+import 'RestaurantInfo.dart';
 
 class FirebaseFunctions {
   final db = Firestore.instance;
@@ -72,23 +73,18 @@ class FirebaseFunctions {
   }
 
   Future<void> updateCustomers(Restaurant res) async {
-    bool orderedBefore = false;
     final customer = collectionRef
         .document(res.id)
         .collection('Customers')
         .document(MyAppState.currentUser.userID);
     final snapshot = await customer.get();
     if (snapshot != null) {
-      orderedBefore = true; //increment number of orders
+      //customer has ordered before because his document exists
       customer.updateData({
         "numTimesVisited": FieldValue.increment(1),
-        "seats": "[]",
-        "itemsOrdered": "[]",
       });
     } else {
       customer.setData({
-        "seats": "[]",
-        "itemsOrdered": "[]",
         "numTimesVisited": 1,
       });
     }
@@ -104,7 +100,7 @@ class FirebaseFunctions {
     //satVal
     //for each customer, check how many times they have revisited.
     //If each numVisits = 1 --> nothing
-    //If each numVisits 2 or 3  --> add 1 to extraVisits
+    //If each numVisits 2 or 3  --> add 1 to numRevisits
     //satVal  = numVisited/totalCust * 100
     //satVal * 1.03 * extraVisits
     int totalCust = 0;
@@ -139,5 +135,29 @@ class FirebaseFunctions {
     }
     print("satVal: " + satVal.toString());
     return satVal;
+  }
+
+  Future<void> updateOrderList(List orderList) async {
+    await userCollectionRef
+        .document(MyAppState.currentUser.userID)
+        .updateData({Constants.ORDERLIST: orderList.toString()});
+    await collectionRef
+        .document(MyAppState.currentRes.id)
+        .collection('Customers')
+        .document(MyAppState.currentUser.userID)
+        .updateData({Constants.ORDERLIST: orderList.toString()});
+  }
+
+  updateFirebase(List ls) async {
+    for (var el in RestaurantInfo.info) {
+      print(el);
+      var res = await collectionRef.document(el[0]);
+      res.setData({
+        'name': el[1],
+        'qTime': el[2],
+        'numOrders': el[3],
+        'description': el[4]
+      });
+    }
   }
 }

@@ -9,4 +9,5 @@ class Restaurant {
   Map<String, Map<String, dynamic>> seatMap;
   String imgUrl;
   double satVal;
+  int qTime;
 }

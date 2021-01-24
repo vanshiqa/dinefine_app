@@ -33,6 +33,7 @@ dependencies:
   cached_network_image: ^2.5.0
   date_format: ^1.0.9
   vnum: ^1.2.6
+  percent_indicator: "^2.1.7+2"
 
   flutter:
     sdk: flutter

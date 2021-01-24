@@ -14,11 +14,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 import 'constants.dart';
 import 'ui/screens/AuthScreen.dart';
-import 'ui/screens/AuthScreen.dart';
 import 'ui/screens/HomeScreen.dart';
-import 'ui/screens/HomeScreen.dart';
-import 'ui/screens/OnBoardingScreen.dart';
-import 'ui/utils/Authenticate.dart';
 import 'ui/utils/Authenticate.dart';
 
 void main() {

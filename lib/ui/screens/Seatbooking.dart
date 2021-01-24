@@ -20,15 +20,13 @@ class Seatbooking extends StatefulWidget {
 }
 
 class _SeatbookingState extends State<Seatbooking> {
-  String restId = 'NqHOLN9BF7sIur7NKZEb';
   List seatList = List();
-  var arr = ['1', '2', '3'];
   bool isSelected = true;
   User user = MyAppState.currentUser;
   Restaurant res = MyAppState.currentRes;
   TimeOfDay selectedTime;
   Map<String, dynamic> selectedSeatMap;
-  bool madePayment = false;
+  List userBooked = [];
 
   Future<void> _showMyDialog() async {
     return showDialog<void>(
@@ -49,7 +47,6 @@ class _SeatbookingState extends State<Seatbooking> {
             FlatButton(
               child: Text('Make payment'),
               onPressed: () {
-                madePayment = true;
                 Navigator.pushAndRemoveUntil(
                     context,
                     MaterialPageRoute(builder: (context) => PaymentScreen()),
@@ -119,22 +116,16 @@ class _SeatbookingState extends State<Seatbooking> {
         RaisedButton(
           onPressed: () {
             _showMyDialog();
-            if (madePayment) {
-              FirebaseFunctions()
-                  .updateSeats(
-                      res,
-                      selectedSeatMap,
-                      user,
-                      selectedTime
-                          .toString()
-                          .replaceAll("TimeOfDay(", "")
-                          .replaceAll(")", ""))
-                  .then((value) {
-                // setState(() {
-                //   user.booked = value;
-                // });
-              });
-            }
+            FirebaseFunctions()
+                .updateSeats(
+                    res,
+                    selectedSeatMap,
+                    user,
+                    selectedTime
+                        .toString()
+                        .replaceAll("TimeOfDay(", "")
+                        .replaceAll(")", ""))
+                .then((value) {});
           },
           child: Text('Finish Payment'),
         ),

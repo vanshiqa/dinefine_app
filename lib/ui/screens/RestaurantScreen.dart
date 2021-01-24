@@ -1,5 +1,6 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:dinefine_app/model/MenuItem.dart';
+import 'package:dinefine_app/ui/Widgets/AnalysisDisplay.dart';
 import 'package:dinefine_app/ui/screens/Seatbooking.dart';
 import 'package:dinefine_app/ui/utils/DateTimePicker.dart';
 import 'package:dinefine_app/ui/utils/FirebaseFunctions.dart';
@@ -65,6 +66,9 @@ class _RestaurantScreenState extends State<RestaurantScreen> {
                     Padding(
                       padding: EdgeInsets.all(8),
                     ),
+                    Text("Queue Time: " +
+                        MyAppState.currentRes.qTime.toString() +
+                        " mins"),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                       children: [
@@ -73,6 +77,7 @@ class _RestaurantScreenState extends State<RestaurantScreen> {
                           title: 'Menu',
                           toggleBool: () {
                             setState(() {
+                              MyAppState.currentUser.orderList.clear();
                               showAnalysis = false;
                             });
                           },
@@ -96,27 +101,33 @@ class _RestaurantScreenState extends State<RestaurantScreen> {
                             topPrice: topPrice,
                           )
                         : MenuDisplay(menu: menu),
-                    RaisedButton(
-                      child: Text('Book Seats'),
-                      onPressed: () {
-                        FirebaseFunctions()
-                            .updateCustomers(MyAppState.currentRes);
-                        Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) => Seatbooking()));
-                      },
-                    ),
-                    Text("OR"),
-                    RaisedButton(
-                      child: Text('Place Order'),
-                      onPressed: () {
-                        Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) => PaymentScreen()));
-                      },
-                    )
+                    !showAnalysis
+                        ? RaisedButton(
+                            child: Text('Book Seats'),
+                            onPressed: () {
+                              FirebaseFunctions()
+                                  .updateCustomers(MyAppState.currentRes);
+                              Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (context) => Seatbooking()));
+                            },
+                          )
+                        : Container(),
+                    !showAnalysis ? Text("OR") : Container(),
+                    !showAnalysis
+                        ? RaisedButton(
+                            child: Text('Place Order'),
+                            onPressed: () {
+                              Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (context) => PaymentScreen()));
+                              FirebaseFunctions().updateOrderList(
+                                  MyAppState.currentUser.orderList);
+                            },
+                          )
+                        : Container()
                   ],
                 ),
               )
@@ -178,81 +189,6 @@ class ToggleButton extends StatelessWidget {
   }
 }
 
-class AnalysisDisplay extends StatelessWidget {
-  const AnalysisDisplay({
-    Key key,
-    @required this.topThree,
-    @required this.topPrice,
-  }) : super(key: key);
-
-  final List<MenuItem> topThree;
-  final List<MenuItem> topPrice;
-
-  @override
-  Widget build(BuildContext context) {
-    return Column(
-      children: [
-        Container(
-          height: 200,
-          child: Row(
-            children: [
-              Container(
-                height: 100,
-                width: 150,
-                child: ListView.builder(
-                  physics: NeverScrollableScrollPhysics(),
-                  itemCount: 3,
-                  itemBuilder: (context, index) {
-                    MenuItem el = topThree[index];
-                    return Container(
-                      child: Row(
-                        children: [
-                          Text(
-                            index.toString() + '. ',
-                            style: TextStyle(
-                                fontWeight: FontWeight.bold, fontSize: 14),
-                          ),
-                          Text(el.name),
-                        ],
-                      ),
-                    );
-                  },
-                ),
-              ),
-              Container(
-                height: 100,
-                width: 150,
-                child: ListView.builder(
-                  physics: NeverScrollableScrollPhysics(),
-                  itemCount: 3,
-                  itemBuilder: (context, index) {
-                    MenuItem el = topPrice[index];
-                    return Container(
-                      child: Row(
-                        children: [
-                          Text(el.name + " - \$"),
-                          Text(
-                            el.price.toString(),
-                            style: TextStyle(
-                                fontWeight: FontWeight.bold, fontSize: 14),
-                          ),
-                        ],
-                      ),
-                    );
-                  },
-                ),
-              ),
-            ],
-          ),
-        ),
-        Text("Number of customers: " +
-            MyAppState.currentRes.numOrders.toString()),
-        Text("Satisfaction Level: " + MyAppState.currentRes.satVal.toString()),
-      ],
-    );
-  }
-}
-
 class MenuDisplay extends StatefulWidget {
   const MenuDisplay({
     Key key,
@@ -269,39 +205,30 @@ class _MenuDisplayState extends State<MenuDisplay> {
   @override
   Widget build(BuildContext context) {
     return Container(
-      height: 100,
-      child: ListView.builder(
-        scrollDirection: Axis.horizontal,
+      height: 250,
+      child: GridView.builder(
+        gridDelegate: new SliverGridDelegateWithFixedCrossAxisCount(
+            crossAxisCount: 2,
+            childAspectRatio: MediaQuery.of(context).size.width /
+                (MediaQuery.of(context).size.height / 4)),
+        scrollDirection: Axis.vertical,
         itemCount: widget.menu.length,
         itemBuilder: (context, index) {
           MenuItem item = widget.menu[index];
-          return Column(
-            children: [
-              Container(
-                margin: EdgeInsets.all(8),
-                padding: EdgeInsets.all(8),
-                decoration: BoxDecoration(
-                    color: Constants.mainYellow,
-                    border: Border.all(
-                      color: Constants.mainYellow,
-                    ),
-                    borderRadius: BorderRadius.all(Radius.circular(20))),
-                height: 50,
-                child: RaisedButton(
-                  onPressed: () {
-                    itemPressed(item);
-                  },
-                  color: item.isSelected ? Colors.green : Constants.mainYellow,
-                  child: Column(
-                    children: [
-                      Text(item.name),
-                      Text("\$ " + item.price.toString()),
-                    ],
-                    mainAxisAlignment: MainAxisAlignment.center,
-                  ),
-                ),
+          return Card(
+            child: RaisedButton(
+              onPressed: () {
+                itemPressed(item);
+              },
+              color: item.isSelected ? Colors.green : Constants.mainYellow,
+              child: Column(
+                children: [
+                  Text(item.name),
+                  Text("\$ " + item.price.toString()),
+                ],
+                mainAxisAlignment: MainAxisAlignment.center,
               ),
-            ],
+            ),
           );
         },
       ),

@@ -35,6 +35,7 @@ class MyApp extends StatefulWidget {
 class MyAppState extends State<MyApp> with WidgetsBindingObserver {
   static User currentUser;
   static Restaurant currentRes;
+  static List orderList;
 
   FirebaseAuth _auth = FirebaseAuth.instance;
   FireStoreUtils _fireStoreUtils = FireStoreUtils();

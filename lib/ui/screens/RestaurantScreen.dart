@@ -9,6 +9,7 @@ import 'package:flutter/material.dart';
 import '../../constants.dart';
 import '../../main.dart';
 import '../../model/User.dart';
+import 'PaymentScreen.dart';
 
 class RestaurantScreen extends StatefulWidget {
   @override
@@ -104,6 +105,16 @@ class _RestaurantScreenState extends State<RestaurantScreen> {
                             context,
                             MaterialPageRoute(
                                 builder: (context) => Seatbooking()));
+                      },
+                    ),
+                    Text("OR"),
+                    RaisedButton(
+                      child: Text('Place Order'),
+                      onPressed: () {
+                        Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => PaymentScreen()));
                       },
                     )
                   ],
@@ -242,7 +253,7 @@ class AnalysisDisplay extends StatelessWidget {
   }
 }
 
-class MenuDisplay extends StatelessWidget {
+class MenuDisplay extends StatefulWidget {
   const MenuDisplay({
     Key key,
     @required this.menu,
@@ -251,14 +262,19 @@ class MenuDisplay extends StatelessWidget {
   final List<MenuItem> menu;
 
   @override
+  _MenuDisplayState createState() => _MenuDisplayState();
+}
+
+class _MenuDisplayState extends State<MenuDisplay> {
+  @override
   Widget build(BuildContext context) {
     return Container(
       height: 100,
       child: ListView.builder(
         scrollDirection: Axis.horizontal,
-        itemCount: menu.length,
+        itemCount: widget.menu.length,
         itemBuilder: (context, index) {
-          MenuItem item = menu[index];
+          MenuItem item = widget.menu[index];
           return Column(
             children: [
               Container(
@@ -271,12 +287,18 @@ class MenuDisplay extends StatelessWidget {
                     ),
                     borderRadius: BorderRadius.all(Radius.circular(20))),
                 height: 50,
-                child: Column(
-                  children: [
-                    Text(item.name),
-                    Text("\$ " + item.price.toString()),
-                  ],
-                  mainAxisAlignment: MainAxisAlignment.center,
+                child: RaisedButton(
+                  onPressed: () {
+                    itemPressed(item);
+                  },
+                  color: item.isSelected ? Colors.green : Constants.mainYellow,
+                  child: Column(
+                    children: [
+                      Text(item.name),
+                      Text("\$ " + item.price.toString()),
+                    ],
+                    mainAxisAlignment: MainAxisAlignment.center,
+                  ),
                 ),
               ),
             ],
@@ -284,5 +306,20 @@ class MenuDisplay extends StatelessWidget {
         },
       ),
     );
+  }
+
+  itemPressed(MenuItem item) {
+    setState(() {
+      item.isSelected = !item.isSelected;
+    });
+    if (item.isSelected) {
+      //add to list
+      MyAppState.currentUser.orderList.add(item);
+    } else {
+      //remove item from list
+      MyAppState.currentUser.orderList.remove(item);
+    }
+    print('menu item pressed: ' + item.toString());
+    print(MyAppState.currentUser.orderList);
   }
 }

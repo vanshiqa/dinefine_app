@@ -4,6 +4,7 @@ import 'package:dinefine_app/model/User.dart';
 import 'package:dinefine_app/model/restaurant.dart';
 import 'package:dinefine_app/ui/Widgets/LabeledCheckBox.dart';
 import 'package:dinefine_app/ui/screens/HomeScreen.dart';
+import 'package:dinefine_app/ui/screens/PaymentScreen.dart';
 import 'package:dinefine_app/ui/utils/FirebaseFunctions.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -27,6 +28,7 @@ class _SeatbookingState extends State<Seatbooking> {
   Restaurant res = MyAppState.currentRes;
   TimeOfDay selectedTime;
   Map<String, dynamic> selectedSeatMap;
+  bool madePayment = false;
 
   Future<void> _showMyDialog() async {
     return showDialog<void>(
@@ -34,25 +36,23 @@ class _SeatbookingState extends State<Seatbooking> {
       barrierDismissible: false, // user must tap button!
       builder: (BuildContext context) {
         return AlertDialog(
-          title: Text('AlertDialog Title'),
+          title: Text('Confirm Booking?'),
           content: SingleChildScrollView(
             child: ListBody(
               children: <Widget>[
-                Text('This is a demo alert dialog.'),
-                Text('Would you like to approve of this message?'),
+                Text('Is your booking correct?'),
+                Text('Proceed to payment'),
               ],
             ),
           ),
           actions: <Widget>[
             FlatButton(
-              child: Text('Approve'),
+              child: Text('Make payment'),
               onPressed: () {
+                madePayment = true;
                 Navigator.pushAndRemoveUntil(
                     context,
-                    MaterialPageRoute(
-                        builder: (context) => HomeScreen(
-                              user: user,
-                            )),
+                    MaterialPageRoute(builder: (context) => PaymentScreen()),
                     (Route<dynamic> route) => false);
               },
             ),
@@ -118,20 +118,23 @@ class _SeatbookingState extends State<Seatbooking> {
         ),
         RaisedButton(
           onPressed: () {
-            FirebaseFunctions()
-                .updateSeats(
-                    res,
-                    selectedSeatMap,
-                    user,
-                    selectedTime
-                        .toString()
-                        .replaceAll("TimeOfDay(", "")
-                        .replaceAll(")", ""))
-                .then((value) {
-              // setState(() {
-              //   user.booked = value;
-              // });
-            }).whenComplete(() => _showMyDialog());
+            _showMyDialog();
+            if (madePayment) {
+              FirebaseFunctions()
+                  .updateSeats(
+                      res,
+                      selectedSeatMap,
+                      user,
+                      selectedTime
+                          .toString()
+                          .replaceAll("TimeOfDay(", "")
+                          .replaceAll(")", ""))
+                  .then((value) {
+                // setState(() {
+                //   user.booked = value;
+                // });
+              });
+            }
           },
           child: Text('Finish Payment'),
         ),

@@ -17,6 +17,7 @@ class User {
 
 // Booked seats - first element is the time
   var booked = [];
+  var orderList = [];
 
   User(
       {this.email,

@@ -3,10 +3,10 @@ class MenuItem {
   String id;
   double price;
   int popularity;
-  bool isSelected;
-  Map<String, int> orderMap;
+  bool isSelected = false;
+  int qty;
   @override
   String toString() {
-    return super.toString();
+    return name + " : " + isSelected.toString();
   }
 }

@@ -55,7 +55,7 @@ class _HomeState extends State<HomeScreen> {
                 style: TextStyle(color: Colors.white),
               ),
               decoration: BoxDecoration(
-                color: Color(Constants.COLOR_PRIMARY),
+                color: Constants.mainYellow,
               ),
             ),
             ListTile(
@@ -80,7 +80,7 @@ class _HomeState extends State<HomeScreen> {
       ),
       appBar: AppBar(
         title: Text(
-          'Home',
+          '',
           style: TextStyle(color: Colors.black),
         ),
         iconTheme: IconThemeData(color: Colors.black),

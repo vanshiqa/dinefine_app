@@ -160,4 +160,17 @@ class FirebaseFunctions {
       });
     }
   }
+
+  updateSeatsForM(List ls) async {
+    var res = await collectionRef
+        .document('DowijYsMAGyhOgYxTrT0')
+        .collection('Seats');
+    Map<String, dynamic> seatMap = {};
+    for (int j = 0; j < 50; j++) {
+      seatMap.addAll({("a" + j.toString()): "false"});
+    }
+    for (int i = 0; i < ls.length; i++) {
+      res.document(ls[i]).setData(seatMap);
+    }
+  }
 }

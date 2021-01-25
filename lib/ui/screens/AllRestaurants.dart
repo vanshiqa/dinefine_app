@@ -95,35 +95,46 @@ class _AllRestaurantsState extends State<AllRestaurants> {
     return Scaffold(
       backgroundColor: Constants.mainYellow,
       body: Padding(
-        padding: const EdgeInsets.all(30.0),
+        padding: const EdgeInsets.all(10.0),
         child: Column(
           children: <Widget>[
+            Padding(
+              padding: EdgeInsets.all(8),
+            ),
             Text(
               "All Restaurants:",
               style: Constants.HEADING,
             ),
+            Padding(padding: EdgeInsets.all(8)),
             Container(
-              height: 400,
-              child: ListView.builder(
-                itemCount: restArr.length,
-                itemBuilder: (context, index) {
-                  Restaurant res = restArr[index];
-                  return FlatButton(
-                    onPressed: () {
-                      print('selected restaurant button pressed');
-                      MyAppState.currentRes = res;
-                      Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) => RestaurantScreen()));
-                    },
-                    child: ListTile(
-                      title: Text(res.name),
-                      trailing: Text(res.numOrders.toString()),
-                      subtitle: Text(res.description),
-                    ),
-                  );
-                },
+              height: 500,
+              child: Scrollbar(
+                isAlwaysShown: true,
+                controller: new ScrollController(),
+                child: ListView.builder(
+                  itemCount: restArr.length,
+                  itemBuilder: (context, index) {
+                    Restaurant res = restArr[index];
+                    return FlatButton(
+                      onPressed: () {
+                        print('selected restaurant button pressed');
+                        MyAppState.currentRes = res;
+                        Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => RestaurantScreen()));
+                      },
+                      child: ListTile(
+                        title: Text(
+                          res.name,
+                          style: TextStyle(fontSize: 18),
+                        ),
+                        trailing: Text(res.numOrders.toString()),
+                        subtitle: Text(res.description),
+                      ),
+                    );
+                  },
+                ),
               ),
             ),
           ],

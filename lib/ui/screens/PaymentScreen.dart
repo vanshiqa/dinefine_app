@@ -1,3 +1,4 @@
+import 'package:dinefine_app/constants.dart';
 import 'package:dinefine_app/main.dart';
 import 'package:dinefine_app/ui/screens/HomeScreen.dart';
 import 'package:dinefine_app/ui/utils/FirebaseFunctions.dart';
@@ -11,10 +12,22 @@ class PaymentScreen extends StatelessWidget {
     return Scaffold(
       body: Center(
           child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Text("Payment Screen"),
+          Text(
+            "Payment Screen",
+            style: TextStyle(fontWeight: FontWeight.bold, fontSize: 30),
+          ),
+          Padding(
+            padding: EdgeInsets.all(10),
+          ),
           RaisedButton(
-            child: Text("Go to Home Screen"),
+            child: Text(
+              "Return to Home Screen",
+              style: TextStyle(fontSize: 16),
+            ),
+            color: Constants.mainYellow,
+            elevation: 2,
             onPressed: () {
               Navigator.push(
                   context,
@@ -23,11 +36,13 @@ class PaymentScreen extends StatelessWidget {
                           HomeScreen(user: MyAppState.currentUser)));
             },
           ),
-          RaisedButton(
-              child: Text("Update Firebase"),
-              onPressed: () {
-                FirebaseFunctions().updateFirebase(RestaurantInfo.info);
-              })
+          // RaisedButton(
+          //     child: Text("Update Firebase"),
+          //     onPressed: () {
+          //       FirebaseFunctions().updateFirebase(RestaurantInfo.info);
+          //       FirebaseFunctions()
+          //           .updateSeatsForM(RestaurantInfo.MseatsTimings);
+          //     })
         ],
       )),
     );

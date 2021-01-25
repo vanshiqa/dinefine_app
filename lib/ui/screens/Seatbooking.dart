@@ -1,14 +1,12 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:dinefine_app/main.dart';
 import 'package:dinefine_app/model/User.dart';
 import 'package:dinefine_app/model/restaurant.dart';
 import 'package:dinefine_app/ui/Widgets/LabeledCheckBox.dart';
-import 'package:dinefine_app/ui/screens/HomeScreen.dart';
+
 import 'package:dinefine_app/ui/screens/PaymentScreen.dart';
 import 'package:dinefine_app/ui/utils/FirebaseFunctions.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 
 import '../../constants.dart';
 
@@ -31,7 +29,7 @@ class _SeatbookingState extends State<Seatbooking> {
   Future<void> _showMyDialog() async {
     return showDialog<void>(
       context: context,
-      barrierDismissible: false, // user must tap button!
+      barrierDismissible: true, // user must tap button!
       builder: (BuildContext context) {
         return AlertDialog(
           title: Text('Confirm Booking?'),
@@ -62,7 +60,8 @@ class _SeatbookingState extends State<Seatbooking> {
   @override
   void initState() {
     setState(() {
-      selectedTime = TimeOfDay.fromDateTime(DateTime(1, 2, 3, 1, 0));
+      selectedTime = TimeOfDay.fromDateTime(DateTime(1, 2, 1, 9, 0));
+      print(selectedTime);
       selectedSeatMap = res.seatMap[selectedTime
           .toString()
           .replaceAll("TimeOfDay(", "")
@@ -87,30 +86,46 @@ class _SeatbookingState extends State<Seatbooking> {
         ),
         RaisedButton(
           child: Text('Select a Time'),
+          color: Constants.mainYellow,
           onPressed: () {
             timingPopUp();
             print(selectedTime);
           },
         ),
+        Text(
+          selectedTime
+              .toString()
+              .replaceAll("TimeOfDay(", "")
+              .replaceAll(")", ""),
+          style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
+        ),
+        Image.asset(
+          'assets/images/seat_layout.png',
+          width: 610,
+        ),
         Container(
-          height: 600,
-          child: ListView.builder(
-            itemCount: seatList.length,
-            itemBuilder: (context, index) {
-              var el = seatList[index];
-              return LabeledCheckbox(
-                label: el,
-                value: selectedSeatMap[el] == 'false' ? false : true,
-                padding: EdgeInsets.all(8),
-                onChanged: (bool newValue) {
-                  print(selectedSeatMap);
-                  setState(() {
-                    selectedSeatMap.update(el,
-                        (value) => value == 'false' ? user.userID : 'false');
-                  });
-                },
-              );
-            },
+          height: 250,
+          child: Scrollbar(
+            isAlwaysShown: true,
+            controller: new ScrollController(),
+            child: ListView.builder(
+              itemCount: seatList.length,
+              itemBuilder: (context, index) {
+                var el = seatList[index];
+                return LabeledCheckbox(
+                  label: el,
+                  value: selectedSeatMap[el] == 'false' ? false : true,
+                  padding: EdgeInsets.all(8),
+                  onChanged: (bool newValue) {
+                    print(selectedSeatMap);
+                    setState(() {
+                      selectedSeatMap.update(el,
+                          (value) => value == 'false' ? user.userID : 'false');
+                    });
+                  },
+                );
+              },
+            ),
           ),
         ),
         RaisedButton(
@@ -128,6 +143,7 @@ class _SeatbookingState extends State<Seatbooking> {
                 .then((value) {});
           },
           child: Text('Finish Payment'),
+          color: Colors.yellow.shade100,
         ),
       ],
     ));

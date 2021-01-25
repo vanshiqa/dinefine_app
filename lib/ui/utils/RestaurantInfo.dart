@@ -11,6 +11,8 @@ class RestaurantInfo {
       "Grungy and underground, akin the dens of Hong Kong"
     ],
     ["e", "Zafferano", 30, 34, "Michelin-star Italian experience"],
+    ["f", "Odette", 30, 34, "Parisian atmosphere at your doorstep"],
+    ["g", "NOX", 30, 34, "Dine in the dark!"],
   ];
   static const RESIDS = [
     'DowijYsMAGyhOgYxTrT0',
@@ -18,6 +20,23 @@ class RestaurantInfo {
     'a',
     'b',
     'c',
-    'd'
+    'd',
+    'e',
+    'f',
+    'g'
+  ];
+  static const MseatsTimings = [
+    "09:00",
+    "10:00",
+    "11:00",
+    "12:00",
+    "13:00",
+    "14:00",
+    "15:00",
+    "16:00",
+    "17:00",
+    "18:00",
+    "19:00",
+    "20:00"
   ];
 }

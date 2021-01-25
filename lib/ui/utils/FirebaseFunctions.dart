@@ -4,8 +4,6 @@ import 'package:dinefine_app/main.dart';
 import 'package:dinefine_app/model/MenuItem.dart';
 import 'package:dinefine_app/model/User.dart';
 import 'package:dinefine_app/model/restaurant.dart';
-import 'package:dinefine_app/ui/utils/Authenticate.dart';
-import 'package:flutter/cupertino.dart';
 
 import '../../constants.dart';
 import 'RestaurantInfo.dart';
@@ -95,14 +93,13 @@ class FirebaseFunctions {
 
   Future<double> getSatisfactionValue(String id) async {
     //get total customers = totalCust
-    // numRevisited
-    //extraVisits
-    //satVal
     //for each customer, check how many times they have revisited.
-    //If each numVisits = 1 --> nothing
+    //If each numVisits = 1 --> no revists
     //If each numVisits 2 or 3  --> add 1 to numRevisits
+    //If each numVisits > 3 --> increment extraVisits
     //satVal  = numVisited/totalCust * 100
-    //satVal * 1.03 * extraVisits
+    //satVal * 1.03 * extraVisits (more weightage)
+    //Floor satVal at 100 show it can be shown as percentage dial
     int totalCust = 0;
     int numRevisited = 0;
     int extraVisits = 0;
@@ -125,8 +122,8 @@ class FirebaseFunctions {
         }
       });
     });
-    print(totalCust);
-    print(numRevisited);
+    // print(totalCust);
+    // print(numRevisited);
     satVal = (numRevisited / totalCust) * 100;
     print("satVal before extra: " + satVal.toString());
     satVal += extraVisits * 1.03;
@@ -148,6 +145,7 @@ class FirebaseFunctions {
         .updateData({Constants.ORDERLIST: orderList.toString()});
   }
 
+  //ignore this
   updateFirebase(List ls) async {
     for (var el in RestaurantInfo.info) {
       print(el);
@@ -161,6 +159,7 @@ class FirebaseFunctions {
     }
   }
 
+  //ignore this
   updateSeatsForM(List ls) async {
     var res = await collectionRef
         .document('DowijYsMAGyhOgYxTrT0')
